@@ -1,0 +1,15 @@
+env:
+  node: true
+  es6: true
+  browser: true
+
+extends:
+  # https://github.com/yannickcr/eslint-plugin-react#configuration
+  - eslint:recommended
+  # https://prettier.io/docs/en/eslint.html#why-not-both
+  - plugin:prettier/recommended
+
+parser: babel-eslint
+
+rules:
+  no-console: warn
