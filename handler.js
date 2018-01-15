@@ -1,5 +1,8 @@
 "use strict";
 
+const bunyan = require("bunyan");
+const log = bunyan.createLogger({ name: "hello" });
+
 module.exports.hello = (event, context, callback) => {
   const response = {
     statusCode: 200,
@@ -8,6 +11,8 @@ module.exports.hello = (event, context, callback) => {
       input: event
     })
   };
+
+  log.info("Log example in hello function");
 
   callback(null, response);
 
