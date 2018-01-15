@@ -2,14 +2,32 @@
   "name": "serverless-service",
   "version": "1.0.0",
   "description": "Serverless functions",
-  "main": "handler.js",
-  "dependencies": {
-    "serverless": "^1.2.1"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Kenneth Ng",
-  "license": "ISC"
+  "license": "ISC",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "flow": "flow --color always",
+    "precommit": "lint-staged && npm run flow"
+  },
+  "lint-staged": {
+    "**/*.js": ["prettier --parser flow --write", "eslint --fix", "git add"],
+    "**/*.json": ["prettier --write", "git add"]
+  },
+  "dependencies": {
+    "serverless": "^1.2.1",
+    "husky": "^0.14.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.1.2",
+    "babel-preset-flow": "^6.23.0",
+    "eslint": "^4.14.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.4.0",
+    "eslint-plugin-react": "^7.5.1",
+    "flow-bin": "^0.62.0",
+    "lint-staged": "^6.0.0",
+    "prettier": "1.9.2"
+  }
 }
