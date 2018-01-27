@@ -1,16 +1,26 @@
 "use strict";
 
 const qs = require("qs");
+const path = require("path");
+const format = require("date-fns/format");
+
+const AWS = require("aws-sdk"); // eslint-disable-line import/no-extraneous-dependencies
+const s3 = new AWS.S3();
+
 const bunyan = require("bunyan");
 const log = bunyan.createLogger({ name: "serverless-services" });
 
-module.exports.fetchImage = (event, context, callback) => {
-  const { url } = qs.parse(event.body);
+const getUploadImagePath = imageUrl =>
+  format(new Date(), "YYYYMMDD/HHmmss") + path.extname(imageUrl);
 
-  log.info("fetch url: " + url);
+module.exports.fetchImage = (event, context, callback) => {
+  const { imageUrl } = qs.parse(event.body);
+  log.info("fetchUrl=[" + imageUrl + "]");
+
+  const uploadImagePath = getUploadImagePath(imageUrl);
 
   // https://github.com/serverless/examples/tree/master/aws-node-fetch-file-and-store-in-s3
-  fetch(url)
+  fetch(imageUrl)
     .then(response => {
       if (response.ok) {
         return response;
@@ -24,11 +34,20 @@ module.exports.fetchImage = (event, context, callback) => {
       );
     })
     .then(response => response.buffer())
-    .then(buffer => console.log(buffer))
-    .then(() => {
+    .then(buffer =>
+      s3
+        .putObject({
+          Bucket: process.env.BUCKET,
+          Key: uploadImagePath,
+          Body: buffer
+        })
+        .promise()
+    )
+    .then(v => {
+      console.log(v);
       const response = {
         statusCode: 200,
-        body: { url }
+        body: { imageUrl }
       };
       callback(null, response);
     });
