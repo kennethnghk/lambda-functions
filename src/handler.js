@@ -2,6 +2,7 @@
 
 const qs = require("qs");
 const path = require("path");
+const fetch = require("node-fetch");
 const format = require("date-fns/format");
 
 const AWS = require("aws-sdk"); // eslint-disable-line import/no-extraneous-dependencies
@@ -45,12 +46,12 @@ module.exports.fetchImage = (event, context, callback) => {
         })
         .promise()
     )
-    .then(v => {
-      console.log(v);
+    .then(() => {
       const response = {
         statusCode: 200,
-        body: { imageUrl, s3Url: formatS3Url(s3Key) }
+        headers: {},
+        body: JSON.stringify({ imageUrl, s3Url: formatS3Url(s3Key) })
       };
       callback(null, response);
-    });
+    }, callback);
 };
