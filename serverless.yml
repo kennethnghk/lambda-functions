@@ -67,8 +67,8 @@ plugins:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.fetchImage
+  fetchImage:
+    handler: src/handler.fetchImage
     events:
       - http:
           path: image/fetch

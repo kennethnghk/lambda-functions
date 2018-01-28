@@ -7,17 +7,17 @@ const format = require("date-fns/format");
 const AWS = require("aws-sdk"); // eslint-disable-line import/no-extraneous-dependencies
 const s3 = new AWS.S3();
 
-const bunyan = require("bunyan");
-const log = bunyan.createLogger({ name: "serverless-services" });
+const log = require("./utils/logger");
+const { formatS3Url } = require("./utils/s3");
 
-const getUploadImagePath = imageUrl =>
+const getS3Key = imageUrl =>
   format(new Date(), "YYYYMMDD/HHmmss") + path.extname(imageUrl);
 
 module.exports.fetchImage = (event, context, callback) => {
   const { imageUrl } = qs.parse(event.body);
   log.info("fetchUrl=[" + imageUrl + "]");
 
-  const uploadImagePath = getUploadImagePath(imageUrl);
+  const s3Key = getS3Key(imageUrl);
 
   // https://github.com/serverless/examples/tree/master/aws-node-fetch-file-and-store-in-s3
   fetch(imageUrl)
@@ -38,7 +38,7 @@ module.exports.fetchImage = (event, context, callback) => {
       s3
         .putObject({
           Bucket: process.env.BUCKET,
-          Key: uploadImagePath,
+          Key: s3Key,
           Body: buffer,
           ACL: "public-read",
           ContentType: "image/jpeg"
@@ -49,7 +49,7 @@ module.exports.fetchImage = (event, context, callback) => {
       console.log(v);
       const response = {
         statusCode: 200,
-        body: { imageUrl }
+        body: { imageUrl, s3Url: formatS3Url(s3Key) }
       };
       callback(null, response);
     });
