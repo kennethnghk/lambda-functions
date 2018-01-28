@@ -17,10 +17,22 @@ service: serverless-service
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
 
+custom:
+  bucket: kenlab-fimg
+
 provider:
   name: aws
   runtime: nodejs6.10
   region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+      Resource: "arn:aws:s3:::${self:custom.bucket}/*"
+
+plugins:
+  - serverless-offline
 
 # you can overwrite defaults here
 #  stage: dev
@@ -56,12 +68,14 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  fetchImage:
+    handler: src/handler.fetchImage
     events:
       - http:
-          path: hello/get
-          method: get
+          path: image/fetch
+          method: post
+    environment:
+      BUCKET: ${self:custom.bucket}
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
