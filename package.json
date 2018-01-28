@@ -1,7 +1,7 @@
 {
-  "name": "serverless-service",
+  "name": "lamda-functions",
   "version": "1.0.0",
-  "description": "Serverless functions",
+  "description": "AWS lamda functions",
   "author": "Kenneth Ng",
   "license": "ISC",
   "main": "handler.js",
