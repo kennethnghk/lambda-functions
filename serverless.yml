@@ -69,7 +69,7 @@ plugins:
 
 functions:
   fetchImage:
-    handler: src/handler.fetchImage
+    handler: src/index.handle
     events:
       - http:
           path: image/fetch
