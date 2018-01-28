@@ -39,7 +39,9 @@ module.exports.fetchImage = (event, context, callback) => {
         .putObject({
           Bucket: process.env.BUCKET,
           Key: uploadImagePath,
-          Body: buffer
+          Body: buffer,
+          ACL: "public-read",
+          ContentType: "image/jpeg"
         })
         .promise()
     )
