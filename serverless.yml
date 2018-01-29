@@ -68,12 +68,11 @@ plugins:
 #    - exclude-me-dir/**
 
 functions:
-  fetchImage:
-    handler: src/handler.fetchImage
+  app:
+    handler: src/index.handler
     events:
-      - http:
-          path: image/fetch
-          method: post
+      - http: ANY /
+      - http: 'ANY {proxy+}'
     environment:
       BUCKET: ${self:custom.bucket}
 
